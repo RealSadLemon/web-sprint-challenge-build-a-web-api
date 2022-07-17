@@ -1,9 +1,23 @@
 // add middlewares here related to actions
+const actionsModel = require('./actions-model');
 
 function logger(req, res, next) {
     console.log(`[${new Date().toISOString().substring(0, 10)}] - ${req.method} to ${req.url} from ${req.get('Origin')} with payload ${req.body}`)
   
     next();
+}
+
+function actionsBodyIdValidation(req, res, next) {
+    const { id } = req.params;
+    actionsModel.get(id)
+        .then(action => {
+            if(action == null){
+                res.status(404).json({ message: "action not found." });
+                return;
+            }
+            req.action = action;
+            next();
+        })
 }
 
 function actionsBodyValidation(req, res, next) {
@@ -27,5 +41,6 @@ function actionsBodyValidation(req, res, next) {
 
 module.exports = {
     actionsBodyValidation,
+    actionsBodyIdValidation,
     logger
 }

@@ -2,9 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const actionsModel = require('./actions-model');
-const { actionsBodyValidation, logger } = require('./actions-middlware');
+const { actionsBodyValidation, logger, actionsBodyIdValidation } = require('./actions-middlware');
 
-router.get('/', (req, res) => {
+router.get('/', logger, (req, res) => {
     actionsModel.get()
         .then(actions => {
             if(actions == []){
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
         })
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', logger, (req, res) => {
     actionsModel.get(req.params.id)
         .then(action => {
             if(action === null){
@@ -34,6 +34,21 @@ router.post('/', logger, actionsBodyValidation, (req, res) => {
     actionsModel.insert(body)
         .then(postedAction => {
             res.status(201).json(postedAction);
+        })
+})
+
+router.put('/:id', logger, actionsBodyValidation, (req, res) => {
+    const { body } = req;
+    actionsModel.update(req.params.id, body)
+        .then(updatedAction => {
+            res.status(200).json(updatedAction);
+        })
+})
+
+router.delete('/:id', logger, actionsBodyIdValidation, (req, res) => {
+    actionsModel.remove(req.params.id)
+        .then(deletedActionId => {
+            res.status(200).json(actionsModel.get(deletedActionId));
         })
 })
 
