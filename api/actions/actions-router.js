@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const actionsModel = require('./actions-model');
+const { actionsBodyValidation, logger } = require('./actions-middlware');
 
 router.get('/', (req, res) => {
     actionsModel.get()
@@ -25,6 +26,14 @@ router.get('/:id', (req, res) => {
             } else {
                 res.status(200).json(action)
             }
+        })
+})
+
+router.post('/', logger, actionsBodyValidation, (req, res) => {
+    const { body } = req;
+    actionsModel.insert(body)
+        .then(postedAction => {
+            res.status(201).json(postedAction);
         })
 })
 

@@ -9,6 +9,7 @@ const projectsRouter = require('./projects/projects-router');
 // Build your projects router in /api/projects/projects-router.js
 // Do NOT `server.listen()` inside this file!
 
+server.use(express.json());
 server.use('/api/actions', actionsRouter);
 server.use('/api/projects', projectsRouter);
 
