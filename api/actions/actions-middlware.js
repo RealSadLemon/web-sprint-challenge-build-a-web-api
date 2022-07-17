@@ -7,7 +7,7 @@ function logger(req, res, next) {
     next();
 }
 
-function actionsBodyIdValidation(req, res, next) {
+function actionsIdValidation(req, res, next) {
     const { id } = req.params;
     actionsModel.get(id)
         .then(action => {
@@ -41,6 +41,6 @@ function actionsBodyValidation(req, res, next) {
 
 module.exports = {
     actionsBodyValidation,
-    actionsBodyIdValidation,
+    actionsIdValidation,
     logger
 }
